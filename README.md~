@@ -2,7 +2,7 @@
 
 [Docker Rest API v1.16](https://docs.docker.com/reference/api/docker_remote_api_v1.16/) implementation with C++11 using lambda functions for callbacks.
 
-This library is hosted in **Biicode C++ dependency manager**.
+This library is hosted in **[Biicode](http://www.biicode.com) C++ dependency manager**.
 
 Biicode block [lasote/docker_client](http://www.biicode.com/lasote/docker_client)
 
@@ -10,7 +10,7 @@ Also in [github repository https://github.com/lasote/docker_client](https://gith
 
 **Want to try it?**
 
-The project has many dependencies, we recommend use biicode to handle them:
+The project has many dependencies, we recommend you to use [biicode](http://www.biicode.com) to handle them:
 
 - [Get started with biicode](http://docs.biicode.com/c++/gettingstarted.html)
 -  \*#include "lasote/docker_client/client.h"* in your source code file
@@ -44,5 +44,6 @@ Take a look to the example folder in repository: http://www.biicode.com/lasote/d
 	    cout << "Images: " << ret.dump() << endl;
 	}, error_cb);
 
+	// Its based on libuv event loop, so, run all the requests
 	run_loop();
 
