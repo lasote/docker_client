@@ -44,6 +44,5 @@ Take a look to the example folder in repository: http://www.biicode.com/lasote/d
 	    cout << "Images: " << ret.dump() << endl;
 	}, error_cb);
 
-	// Its based on libuv event loop, so, run all the requests
 	run_loop();
 
