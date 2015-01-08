@@ -1,27 +1,37 @@
 version: 1.0.{build}
 
 environment:
-  secure_key:
-    secure: EKopwujMqvJrkZBw0+Q8XP+PTO5Kh8zQMZFh2KS9OEl2GXbX9nqooVTEQEV7jIe0
+  my_variable:
+    secure: lBislJUl6RP/4mh6NOGZcA==
 
 install:
-  - cmd: choco install nuget.commandline
-  - cmd: cd c:\ProgramData\chocolatey
+  - ps: wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-win32-x86.zip -OutFile cmake.zip
+  - cmd: 7z x cmake.zip -o"C:\Program Files (x86)\" -y
+  - cmd: set PATH=%PATH:CMake 2.8\bin=%;C:\Program Files (x86)\cmake-3.0.2-win32-x86\bin
+  - cmd: cmake --version
+  - ps: wget https://s3.amazonaws.com/biibinaries/release/2.0.1/bii-win_2_0_1.exe -OutFile bii-win.exe
+  - cmd: bii-win.exe /VERYSILENT
+  - cmd: set PATH=%PATH%;C:\Program Files (x86)\BiiCode\bii
+  - cmd: bii -v
+  - ps: wget https://s3.amazonaws.com/biibinaries/thirdparty/MinGW.zip -OutFile mingw.zip
+  - cmd: 7z x mingw.zip -oC:\MinGW -y
+  - cmd: set PATH=%PATH:Git\bin=%;C:\MinGW\bin
+  - cmd: del bii-win.exe
+  - cmd: del cmake.zip
+
+before_build:
+  - cmd: bii init myproject
+  - cmd: cd myproject
+  - cmd: bii open lasote/docker_client
 
 build_script:
-  - cmd: choco pack
-  - cmd: dir *.nupkg /b > tmp
-  - cmd: set /p package= < tmp
-  - cmd: choco install cmake
-  - cmd: choco install biicode -source %cd%
-  - cmd: set PATH=%PATH:CMake 2.8\bin=%;C:\ProgramData\chocolatey\lib\cmake.3.0.2\content\cmake-3.0.2-win32-x86\bin
-  - cmd: set PATH=%PATH%;C:\Program Files (x86)\BiiCode\bii;  
+  - cmd: bii cpp:build
 
 test_script:
-  - cmd: bii --version
-  - cmd: bii init test
-  - cmd: cd test
-  - cmd: bii open lasote/docker_client
-  - cmd: bii cpp:configure -G "Visual Studio 12"
-  - cmd: bii cpp:build
-  - cmd: cd ..
+  - cmd: bin\lasote_docker_client_main.exe
+
+# to run your custom scripts instead of provider deployments
+deploy_script:
+  - cmd: bii user lasote -p %secured_passwd%
+  - cmd: bii publish
+
