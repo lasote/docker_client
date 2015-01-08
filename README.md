@@ -1,5 +1,7 @@
 # C++ Docker Client
 
+[![Build status](https://ci.appveyor.com/api/projects/status/v9ty8y8xusmmptj3?svg=true)](https://ci.appveyor.com/project/lasote/docker-client)
+
 [Docker Rest API v1.16](https://docs.docker.com/reference/api/docker_remote_api_v1.16/) implementation with C++11 using lambda functions for callbacks.
 
 This library is hosted in **[Biicode](http://www.biicode.com) C++ dependency manager**.
