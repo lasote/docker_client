@@ -1,0 +1,27 @@
+version: 1.0.{build}
+
+environment:
+  secure_key:
+    secure: EKopwujMqvJrkZBw0+Q8XP+PTO5Kh8zQMZFh2KS9OEl2GXbX9nqooVTEQEV7jIe0
+
+install:
+  - cmd: choco install nuget.commandline
+  - cmd: cd windows\chocolatey
+
+build_script:
+  - cmd: choco pack
+  - cmd: dir *.nupkg /b > tmp
+  - cmd: set /p package= < tmp
+  - cmd: choco install cmake
+  - cmd: choco install biicode -source %cd%
+  - cmd: set PATH=%PATH:CMake 2.8\bin=%;C:\ProgramData\chocolatey\lib\cmake.3.0.2\content\cmake-3.0.2-win32-x86\bin
+  - cmd: set PATH=%PATH%;C:\Program Files (x86)\BiiCode\bii;  
+
+test_script:
+  - cmd: bii --version
+  - cmd: bii init test
+  - cmd: cd test
+  - cmd: bii open lasote/docker_client
+  - cmd: bii cpp:configure -G "Visual Studio 12"
+  - cmd: bii cpp:build
+  - cmd: cd ..
