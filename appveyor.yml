@@ -6,7 +6,7 @@ environment:
 
 install:
   - cmd: choco install nuget.commandline
-  - cmd: cd windows\chocolatey
+  - cmd: cd c:\windows\chocolatey
 
 build_script:
   - cmd: choco pack
