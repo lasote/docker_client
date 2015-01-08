@@ -12,14 +12,24 @@ Also in [github repository https://github.com/lasote/docker_client](https://gith
 
 The project has many dependencies, we recommend you to use [biicode](http://www.biicode.com) to handle them:
 
-- [Get started with biicode](http://docs.biicode.com/c++/gettingstarted.html)
--  \*#include "lasote/docker_client/client.h"* in your source code file
-- bii find # to download the required dependencies
-- bii cpp:build # to build the project
+[Get started with biicode](http://docs.biicode.com/c++/gettingstarted.html)
 
-Take a look to the example folder in repository: http://www.biicode.com/lasote/docker_client
+Include this header in your source code file:
 
-**Examples**
+    \*#include "lasote/docker_client/client.h"* 
+
+Download the required dependencies:
+
+    bii find
+
+Build the project:
+
+    bii cpp:build # to build the project
+
+Take a look to the example: http://www.biicode.com/examples/docker_client
+
+
+**How to use it**
 
 
 	DockerClient client("http://localhost:4243");
