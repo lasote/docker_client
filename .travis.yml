@@ -33,7 +33,7 @@ script:
 - if [ "$CXX" == "g++" ];     then export CXX="g++"     && bii cpp:build; fi
 - ls ./bin/lasote_docker_client_example_main
 after_success:
-- bii user tschumperle -p $BII_LASOTE_PASSWORD
+- bii user lasote -p $BII_LASOTE_PASSWORD
 - bii publish
 env:
   global:
