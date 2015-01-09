@@ -1,6 +1,11 @@
 # C++ Docker Client
 
-[![Build status](https://ci.appveyor.com/api/projects/status/v9ty8y8xusmmptj3?svg=true)](https://ci.appveyor.com/project/lasote/docker-client)
+**Build status**
+
+Visual Studio 2012: [![Build status](https://ci.appveyor.com/api/projects/status/v9ty8y8xusmmptj3?svg=true)](https://ci.appveyor.com/project/lasote/docker-client)
+
+Linux gcc: PENDING CI INTEGRATION
+
 
 [Docker Rest API v1.16](https://docs.docker.com/reference/api/docker_remote_api_v1.16/) implementation with C++11 using lambda functions for callbacks.
 
