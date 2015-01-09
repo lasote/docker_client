@@ -25,6 +25,7 @@ before_build:
   # Yes, I know, sure this move can be improved
   - cmd: move ..\* blocks\lasote\docker_client\
   - cmd: move ..\example blocks\lasote\docker_client\
+  - cmd: bii cpp:configure -G "Visual Studio 12"
 
 build_script:
   - cmd: bii cpp:build
