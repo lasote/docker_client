@@ -31,7 +31,7 @@ build_script:
   - cmd: bii cpp:build
 
 test_script:
-  - cmd: bin\lasote_docker_client_example_main.exe
+  - cmd: ls bin\lasote_docker_client_example_main.exe
 
 # to run your custom scripts instead of provider deployments
 deploy_script:
