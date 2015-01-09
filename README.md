@@ -12,7 +12,7 @@ Also in [github repository https://github.com/lasote/docker_client](https://gith
 
 *Visual Studio 2012:* [![Build status](https://ci.appveyor.com/api/projects/status/v9ty8y8xusmmptj3?svg=true)](https://ci.appveyor.com/project/lasote/docker-client)
 
-*Linux gcc:* PENDING TRAVIS-CI INTEGRATION
+*Linux gcc:* [![Build Status](https://travis-ci.org/lasote/docker_client.svg?branch=master)](https://travis-ci.org/lasote/docker_client)
 
 
 ### Want to try it?
@@ -23,7 +23,7 @@ The project has many dependencies, we recommend you to use [biicode](http://www.
 
 Include this header in your source code file:
 
-    \*#include "lasote/docker_client/client.h"* 
+    #include "lasote/docker_client/client.h"
 
 Download the required dependencies:
 
