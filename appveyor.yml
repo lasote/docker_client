@@ -22,8 +22,9 @@ before_build:
   - cmd: bii init myproject
   - cmd: cd myproject
   - cmd: bii new lasote/docker_client
-  - cmd: xcopy ..\* blocks\lasote\docker_client\ /s /e  
-  - cmd: bii cpp:configure -G "Visual Studio 12"
+  # Yes, I know, sure this move can be improved
+  - cmd: move ..\* blocks\lasote\docker_client\
+  - cmd: move ..\example blocks\lasote\docker_client\
 
 build_script:
   - cmd: bii cpp:build
