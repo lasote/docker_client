@@ -34,7 +34,7 @@ script:
 - ls ./bin/lasote_docker_client_example_main
 after_success:
 - bii user lasote -p $BII_LASOTE_PASSWORD
-- bii publish
+- bii publish || echo "Ignored publish output..."
 env:
   global:
     secure: cabgYGqj4LZ7hvmSPH+zPcu4CRF0YQpH5A+HZsMq6ObQU4pUBY7yTx53O0zwdfKiB6DdLsly12DLsepAzvIOKAHd1egfjhIl4TZtsDGSKmUAxS0boawspwIwj+aTfgKluNBcfV2CT56gHp+Fzi8FAudDYwKRw/BHS5EGOZ9QxTY=

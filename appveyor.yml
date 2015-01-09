@@ -36,5 +36,5 @@ test_script:
 # to run your custom scripts instead of provider deployments
 deploy_script:
   - cmd: bii user lasote -p %secured_passwd%
-  - cmd: bii publish
+  - cmd: bii publish || echo "Ignored publish output..."
 
