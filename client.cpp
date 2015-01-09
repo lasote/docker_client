@@ -116,13 +116,13 @@ shared_ptr<LambdaRequest> DockerClient::copy_from_container(STRING_F ret_cb, ERR
 
 	request_call->on_message_complete_cb = [request_call, ret_cb, err_cb, dest_tar_file] (int status) {
 		if(status > 299){
-			debug("Error calling: " << status);
+			log_debug("Error calling: " << status);
 			if(err_cb != NULL){
 				err_cb(status, request_call->response_buffer);
 			}
 		}
 		else{
-			debug("Status: " << status);
+			log_debug("Status: " << status);
 			//Write file to dest_tar_file
 			ofstream myfile;
 		    myfile.open(dest_tar_file);
@@ -161,7 +161,7 @@ shared_ptr<LambdaRequest> DockerClient::list_images(JSON_F ret_cb, ERR_F err_cb)
 
 
 shared_ptr<LambdaRequest> DockerClient::get_and_parse_response(string path, JSON_F ret_cb, ERR_F err_cb, CHAR_PTR_F on_body_cb){
-	info(path);
+	log_info(path);
 	Request request;
 	Method method("GET", uri + path);
 	request.method = &method;
@@ -169,7 +169,7 @@ shared_ptr<LambdaRequest> DockerClient::get_and_parse_response(string path, JSON
 }
 
 shared_ptr<LambdaRequest> DockerClient::get_and_parse_response(string path, STRING_F ret_cb, ERR_F err_cb, CHAR_PTR_F on_body_cb){
-	info(path);
+	log_info(path);
 	Request request;
 	Method method("GET", uri + path);
 	request.method = &method;
@@ -177,7 +177,7 @@ shared_ptr<LambdaRequest> DockerClient::get_and_parse_response(string path, STRI
 }
 
 shared_ptr<LambdaRequest> DockerClient::post_and_parse_json_response(string path, string body, JSON_F ret_cb, ERR_F err_cb, CHAR_PTR_F on_body_cb){
-	info(path);
+	log_info(path);
 	Request request;
 	Method method("POST", uri + path);
 	request.method = &method;
@@ -199,24 +199,24 @@ shared_ptr<LambdaRequest> DockerClient::call_and_parse_response(Request& request
 
 	request_call->on_message_complete_cb = [request_call, ret_cb, err_cb] (int status) {
 		if(status > 299){
-			debug("Error calling: " << status);
+			log_debug("Error calling: " << status);
 			if(err_cb != NULL){
 				err_cb(status, request_call->response_buffer);
 			}
 		}
 		else{
-			debug("Status: " << status << endl);
+			log_debug("Status: " << status << endl);
 			JSON_OBJECT json_ret;
 			if(request_call->response_buffer.length() > 0){
 				if(request_call->response_buffer[0] == '{'){
 					json_ret.parse(request_call->response_buffer);
-					debug("Response JSON OBJECT: " << json_ret << endl);
+					log_debug("Response JSON OBJECT: " << json_ret << endl);
 				}
 				else if(request_call->response_buffer[0] == '['){
 					JSON_ARRAY json_tmp;
 					json_tmp.parse(request_call->response_buffer);
 					json_ret << "data" << json_tmp;
-					debug("Response JSON ARRAY: " << json_tmp << endl);
+					log_debug("Response JSON ARRAY: " << json_tmp << endl);
 				}
 			}
 			ret_cb(json_ret);
@@ -232,13 +232,13 @@ shared_ptr<LambdaRequest> DockerClient::call_and_parse_response(Request& request
 
 	request_call->on_message_complete_cb = [request_call, ret_cb, err_cb] (int status) {
 		if(status > 299){
-			debug("Error calling: " << status);
+			log_debug("Error calling: " << status);
 			if(err_cb != NULL){
 				err_cb(status, request_call->response_buffer);
 			}
 		}
 		else{
-			debug("Status: " << status);
+			log_debug("Status: " << status);
 			ret_cb(request_call->response_buffer);
 		}
 	};
