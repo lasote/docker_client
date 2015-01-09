@@ -1,0 +1,29 @@
+language: cpp
+compiler:
+- gcc
+before_install:
+- sudo apt-get update -qq
+install:
+- wget http://www.biicode.com/downloads/latest/ubuntu64
+- mv ubuntu64 bii-ubuntu64.deb
+- sudo dpkg -i bii-ubuntu64.deb && sudo apt-get -f install
+- rm bii-ubuntu64.deb
+- wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-Linux-64.tar.gz
+- tar -xzf cmake-3.0.2-Linux-64.tar.gz
+- sudo cp -fR cmake-3.0.2-Linux-64/* /usr
+- rm -rf cmake-3.0.2-Linux-64
+- rm cmake-3.0.2-Linux-64.tar.gz
+script:
+- cmake --version
+- bii init biicode_project
+- mkdir -p ./biicode_project/blocks/lasote/docker_client
+- mv !(biicode_project) ./biicode_project/blocks/lasote/docker_client
+- cd biicode_project
+- bii cpp:build
+- ls ./bin/lasote_docker_client_example_main
+after_success:
+- bii user tschumperle -p $BII_LASOTE_PASSWORD
+- bii publish
+env:
+  global:
+    secure: cabgYGqj4LZ7hvmSPH+zPcu4CRF0YQpH5A+HZsMq6ObQU4pUBY7yTx53O0zwdfKiB6DdLsly12DLsepAzvIOKAHd1egfjhIl4TZtsDGSKmUAxS0boawspwIwj+aTfgKluNBcfV2CT56gHp+Fzi8FAudDYwKRw/BHS5EGOZ9QxTY=
