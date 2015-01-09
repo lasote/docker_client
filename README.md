@@ -38,23 +38,21 @@ Take a look to the example: http://www.biicode.com/examples/docker_client
 
 	// Error callback for all examples
 	ERR_F error_cb = [] (int status, string desc) {
-	    cout << "Error: " << status <<  endl  << desc;
+	  cout << "Error: " << status <<  endl  << desc;
 	};
 
-	// Get the container logs
-	auto c3 = client.logs_container([] (string out) {
-	       cout << "Response: " << out << endl;
+	auto c5 = client.logs_container([] (string out) {
+      cout << "Response: " << out << endl;
 	}, error_cb, "c7ddced66641", true, true, true, true, "all");
 
-	// List containers
-	auto c3 = client.list_containers([] (Json ret) {
-	  cout << "Containers: " << ret.dump() << endl;
+
+	auto c6 = client.list_containers([] ( jsonxx::Object ret) {
+	  cout << "Containers: " << ret.json() << endl;
 	}, error_cb, false, 13);
 
-	// List images
-	auto c4 = client.list_images([] (Json ret) {
-	    cout << "Images: " << ret.dump() << endl;
-	}, error_cb);
+	auto c7 = client.list_images([] ( jsonxx::Object ret) {
+	  cout << "Images: " << ret.json() << endl;
+	}, error_cb); 
 
 	// Its based on libuv event loop, so, run all the requests
 	run_loop();

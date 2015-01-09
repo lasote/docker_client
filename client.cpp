@@ -1,6 +1,4 @@
-#include "lasote/json11/json11.hpp"
 #include "client.h"
-#include <memory>
 
 DockerClient::DockerClient(string host) : uri(host){
 }
@@ -16,7 +14,7 @@ shared_ptr<LambdaRequest> DockerClient::docker_version(JSON_F ret_cb, ERR_F err_
 	return get_and_parse_response(uri, ret_cb, err_cb);
 }
 
-shared_ptr<LambdaRequest> DockerClient::list_containers(JSON_F ret_cb, ERR_F err_cb, bool all, int limit, string since, string before, int size, Json filters){
+shared_ptr<LambdaRequest> DockerClient::list_containers(JSON_F ret_cb, ERR_F err_cb, bool all, int limit, string since, string before, int size, JSON_OBJECT filters){
 
 	string uri = "/containers/json?";
 	uri += param("all", all);
@@ -39,11 +37,11 @@ shared_ptr<LambdaRequest> DockerClient::top_container(JSON_F ret_cb, ERR_F err_c
 	return get_and_parse_response(uri, ret_cb, err_cb);
 }
 
-shared_ptr<LambdaRequest> DockerClient::logs_container(STRING_F ret_cb, ERR_F err_cb, string container_id, bool follow, bool stdout, bool stderr, bool timestamps, string tail){
+shared_ptr<LambdaRequest> DockerClient::logs_container(STRING_F ret_cb, ERR_F err_cb, string container_id, bool follow, bool o_stdout, bool o_stderr, bool timestamps, string tail){
 	string uri = "/containers/" + container_id + "/logs?";
 	uri += param("follow", follow);
-	uri += param("stdout", stdout);
-	uri += param("stderr", stderr);
+	uri += param("stdout", o_stdout);
+	uri += param("stderr", o_stderr);
 	uri += param("timestamps", timestamps);
 	uri += param("tail", tail);
 	return get_and_parse_response(uri, ret_cb, err_cb);
@@ -54,10 +52,10 @@ shared_ptr<LambdaRequest> DockerClient::get_container_changes(JSON_F ret_cb, ERR
 	return get_and_parse_response(uri, ret_cb, err_cb);
 }
 
-shared_ptr<LambdaRequest>  DockerClient::create_container(JSON_F ret_cb, ERR_F err_cb, Json parameters){
+shared_ptr<LambdaRequest>  DockerClient::create_container(JSON_F ret_cb, ERR_F err_cb, JSON_OBJECT parameters){
 	string uri = "/containers/create";
 	//string tmp = "{\"Hostname\":\"\",\"Domainname\": \"\",\"User\":\"\",\"Memory\":0,\"MemorySwap\":0,\"CpuShares\": 512,\"Cpuset\": \"0,1\",\"AttachStdin\":false,\"AttachStdout\":true,\"AttachStderr\":true,\"PortSpecs\":null,\"Tty\":false,\"OpenStdin\":false,\"StdinOnce\":false,\"Env\":null,\"Cmd\":[ \"date\"],\"Image\":\"base\",\"Volumes\":{ \"/tmp\": {}},\"WorkingDir\":\"\",\"NetworkDisabled\": false,\"ExposedPorts\":{ \"22/tcp\": {}}}";
-	return post_and_parse_json_response(uri, parameters.dump(), ret_cb, err_cb);
+	return post_and_parse_json_response(uri, parameters.json(), ret_cb, err_cb);
 }
 
 shared_ptr<LambdaRequest> DockerClient::start_container(JSON_F ret_cb, ERR_F err_cb, string container_id){
@@ -101,17 +99,17 @@ shared_ptr<LambdaRequest> DockerClient::delete_container(JSON_F ret_cb, ERR_F er
 
 shared_ptr<LambdaRequest> DockerClient::copy_from_container(STRING_F ret_cb, ERR_F err_cb, string container_id, string file_path, string dest_tar_file){
 	string path = "/containers/" + container_id + "/copy";
-	Json body = Json::object{
-		  {"Resource", file_path}
-	};
-	string tmp = body.dump();
 	Request request;
 	Method method("POST", uri + path);
 	request.method = &method;
-	request.body = tmp;
+	request.body = "{\"Resource\": \""+ file_path + "\"}";
 	std::pair<string,string> content_type("Content-Type", "application/json");
     request.headers.insert(content_type);
-    std::pair<string,string> content_len("Content-Length", to_string(tmp.length()));
+	
+	ostringstream convert;
+	convert << request.body.length();  
+	
+    std::pair<string,string> content_len("Content-Length", convert.str());
     request.headers.insert(content_len);
 
     auto request_call = std::make_shared<LambdaRequest>();
@@ -138,13 +136,13 @@ shared_ptr<LambdaRequest> DockerClient::copy_from_container(STRING_F ret_cb, ERR
 
 }
 
-shared_ptr<LambdaRequest> DockerClient::attach_to_container (JSON_F ret_cb, ERR_F err_cb, CHAR_PTR_F on_body_cb, string container_id, bool logs, bool stream, bool stdin, bool stdout, bool stderr){
+shared_ptr<LambdaRequest> DockerClient::attach_to_container (JSON_F ret_cb, ERR_F err_cb, CHAR_PTR_F on_body_cb, string container_id, bool logs, bool stream, bool o_stdin, bool o_stdout, bool o_stderr){
 	string uri = "/containers/" + container_id + "/attach?";
 	uri += param("logs", logs);
 	uri += param("stream", stream);
-	uri += param("stdin", stdin);
-	uri += param("stdout", stdout);
-	uri += param("stderr", stderr);
+	uri += param("stdin", o_stdin);
+	uri += param("stdout", o_stdout);
+	uri += param("stderr", o_stderr);
 	return post_and_parse_json_response(uri, "", ret_cb, err_cb, on_body_cb);
 }
 
@@ -186,7 +184,11 @@ shared_ptr<LambdaRequest> DockerClient::post_and_parse_json_response(string path
 	request.body = body;
 	std::pair<string,string> content_type("Content-Type", "application/json");
     request.headers.insert(content_type);
-    std::pair<string,string> content_len("Content-Length", to_string(body.length()));
+	
+	ostringstream convert;
+	convert << body.length(); 
+	
+    std::pair<string,string> content_len("Content-Length", convert.str());
     request.headers.insert(content_len);
 
     return call_and_parse_response(request, ret_cb, err_cb, on_body_cb);
@@ -203,10 +205,21 @@ shared_ptr<LambdaRequest> DockerClient::call_and_parse_response(Request& request
 			}
 		}
 		else{
-			debug("Status: " << status);
-			string err;
-			Json json = Json::parse(request_call->response_buffer, err);
-			ret_cb(json);
+			debug("Status: " << status << endl);
+			JSON_OBJECT json_ret;
+			if(request_call->response_buffer.length() > 0){
+				if(request_call->response_buffer[0] == '{'){
+					json_ret.parse(request_call->response_buffer);
+					debug("Response JSON OBJECT: " << json_ret << endl);
+				}
+				else if(request_call->response_buffer[0] == '['){
+					JSON_ARRAY json_tmp;
+					json_tmp.parse(request_call->response_buffer);
+					json_ret << "data" << json_tmp;
+					debug("Response JSON ARRAY: " << json_tmp << endl);
+				}
+			}
+			ret_cb(json_ret);
 		}
 	};
 	request_call->on_body_cb = on_body_cb;
@@ -271,16 +284,18 @@ string param(string param_name, bool param_value){
 
 string param(string param_name, int param_value){
 	if(param_value != -1){
-		return "&" + param_name + "=" + std::to_string(param_value);
+		ostringstream convert;
+		convert << param_value;
+		return "&" + param_name + "=" + convert.str();
 	}
 	else{
 		return "";
 	}
 }
 
-string param( string param_name, Json param_value){
-	if(!param_value.is_null()){
-		return "&" + param_name + "=" + param_value.dump();
+string param( string param_name, JSON_OBJECT param_value){
+	if(!param_value.empty()){
+		return "&" + param_name + "=" + param_value.json();
 	}
 	else{
 		return "";
