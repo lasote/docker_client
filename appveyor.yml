@@ -1,7 +1,7 @@
 version: 1.0.{build}
 
 environment:
-  my_variable:
+  secured_passwd:
     secure: lBislJUl6RP/4mh6NOGZcA==
 
 install:
