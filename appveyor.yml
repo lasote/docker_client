@@ -11,7 +11,7 @@ install:
   - cmd: set PATH=%PATH:CMake 2.8\bin=%;C:\Program Files (x86)\cmake-3.0.2-win32-x86\bin
   - cmd: cmake --version
   - cmd: echo "Downloading biicode..."
-  - ps: wget https://s3.amazonaws.com/biibinaries/release/2.0.1/bii-win_2_0_1.exe -OutFile bii-win.exe
+  - ps: wget http://www.biicode.com/downloads/latest/win -OutFile bii-win.exe
   - cmd: bii-win.exe /VERYSILENT
   - cmd: set PATH=%PATH%;C:\Program Files (x86)\BiiCode\bii
   - cmd: bii -v
