@@ -14,6 +14,7 @@ Also in [github repository https://github.com/lasote/docker_client](https://gith
 
 *Linux gcc:* [![Build Status](https://travis-ci.org/lasote/docker_client.svg?branch=master)](https://travis-ci.org/lasote/docker_client)
 
+Also working with: **Windows** with **MinGW** >=4.8, **OSx** with **Clang** > 6.0 
 
 ### Want to try it?
 
