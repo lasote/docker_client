@@ -1,5 +1,7 @@
 # C++ Docker Client
 
+[![Build Status](https://webapi.biicode.com/v1/badges/lasote/lasote/openssl/master)](https://www.biicode.com/lasote/openssl) 
+
 [Docker Rest API v1.16](https://docs.docker.com/reference/api/docker_remote_api_v1.16/) implementation with C++11 using lambda functions for callbacks.
 
 This library is hosted in **[Biicode](http://www.biicode.com) C++ dependency manager**.
