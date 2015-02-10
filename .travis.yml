@@ -37,7 +37,7 @@ script:
 after_success:
 - bii user $USER -p $BII_PASSWORD
 - if [[ -n $TRAVIS_TAG ]]; then 
-	bii publish -r --tag STABLE --versiontag $TRAVIS_TAG ||
+    bii publish -r --tag STABLE --versiontag $TRAVIS_TAG ||
     echo "Ignored publish output...";
   fi
 - if [[ -z $TRAVIS_TAG ]]; then 
