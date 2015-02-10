@@ -23,7 +23,7 @@ script:
 # Deploy key, generated with encrypt-file ~/.ssh/id_rsa_xxxx --add (and renaming file to deploy_key.env)
 - openssl aes-256-cbc -K $encrypted_7d3b40702ffc_key -iv $encrypted_7d3b40702ffc_iv
   -in deploy_key.enc -out /tmp/deploy_key -d
-- eval 'ssh-agent -s'
+- eval $(ssh-agent)
 - ssh-add /tmp/deploy_key
 - git config --global user.email "$USER_EMAIL"
 - git config --global user.name "$USER_NAME"
