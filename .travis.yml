@@ -5,7 +5,7 @@ before_install:
 - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
   fi
 - sudo apt-get update -qq
-- "export TRAVIS_COMMIT_MSG=\"$(git log --format=%B --no-merges -n 1)\""
+- export TRAVIS_COMMIT_MSG="$(git log --format=%B --no-merges -n 1)"
 install:
 - if [[ "$TRAVIS_COMMIT_MSG" = "Promoted version" ]]; then exit 0 ; fi
 - if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.8; fi
@@ -30,20 +30,21 @@ script:
 - mkdir -p ./biicode_project/blocks/$USER/$BLOCK_NAME
 - cd biicode_project/blocks/$USER/$BLOCK_NAME
 - shopt -s dotglob && mv $TRAVIS_BUILD_DIR/* ./
-- ./biicodizer.sh
 - if [ "$CXX" == "clang++" ]; then export CXX="clang++" && bii cpp:build; fi
 - if [ "$CXX" == "g++" ];     then export CXX="g++"     && bii cpp:build; fi
 - cd /tmp/biicode_project
 - ls ./bin/lasote_docker_client_example_main
 after_success:
 - bii user $USER -p $BII_PASSWORD
-- if [[ -n $TRAVIS_TAG ]]; then bii publish -r --tag STABLE --versiontag $TRAVIS_TAG || echo "Ignored publish output..." ; fi
-- if [[ -z $TRAVIS_TAG ]]; then bii publish -r || echo "Ignored publish output..." ; fi
-# Re-publish if updated biicode.conf
+- if [[ -n $TRAVIS_TAG ]]; then bii publish -r --tag STABLE --versiontag $TRAVIS_TAG
+  || echo "Ignored publish output..." ; fi
+- if [[ -z $TRAVIS_TAG ]]; then bii publish -r || echo "Ignored publish output..."
+  ; fi
 - cd /tmp/biicode_project/blocks/$USER/$BLOCK_NAME
-- if [[ -n $(git status --porcelain) ]]; then git commit -am "Promoted version" && git push ; fi
+- if [[ -n $(git status --porcelain) ]]; then git commit -am "Promoted version" &&
+  git push ; fi
 env:
   global:
   - BLOCK_NAME=docker_client
   - USER=lasote
-  - secure: cabgYGqj4LZ7hvmSPH+zPcu4CRF0YQpH5A+HZsMq6ObQU4pUBY7yTx53O0zwdfKiB6DdLsly12DLsepAzvIOKAHd1egfjhIl4TZtsDGSKmUAxS0boawspwIwj+aTfgKluNBcfV2CT56gHp+Fzi8FAudDYwKRw/BHS5EGOZ9QxTY=
+  - secure: K4oI72CcIcUBo3cb7DfhPoWSOEZxNzx8JOLpkZ/xOy3vFvXatvDP1KEpDvpirIGkueBuzhzMXXWE1wsefsbimh1PWSE5iyyF52aoWGuhKsjXt0/q80G2uwA/lcJIRJhJCH0m7QAsG8j054x06A+CJUHOsYCNKK3XUzE5ice+Dsc=
