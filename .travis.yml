@@ -44,6 +44,6 @@ after_success:
 - if [[ -n $(git status --porcelain) ]]; then git commit -am "Promoted version" && git push ; fi
 env:
   global:
-  - BLOCK_NAME=openssl
+  - BLOCK_NAME=docker_client
   - USER=lasote
   - secure: cabgYGqj4LZ7hvmSPH+zPcu4CRF0YQpH5A+HZsMq6ObQU4pUBY7yTx53O0zwdfKiB6DdLsly12DLsepAzvIOKAHd1egfjhIl4TZtsDGSKmUAxS0boawspwIwj+aTfgKluNBcfV2CT56gHp+Fzi8FAudDYwKRw/BHS5EGOZ9QxTY=
