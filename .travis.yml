@@ -2,14 +2,15 @@ language: cpp
 compiler:
 - gcc
 before_install:
-# g++
-- if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+- if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
+  fi
 - sudo apt-get update -qq
+- "export TRAVIS_COMMIT_MSG=\"$(git log --format=%B --no-merges -n 1)\""
 install:
-# g++4.8.1
+- if [[ "$TRAVIS_COMMIT_MSG" = "Promoted version" ]]; then exit 0 ; fi
 - if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-- if [ "$CXX" == "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50; fi
-
+- if [ "$CXX" == "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++
+  /usr/bin/g++-4.8 50; fi
 - wget http://www.biicode.com/downloads/latest/ubuntu64
 - mv ubuntu64 bii-ubuntu64.deb
 - sudo dpkg -i bii-ubuntu64.deb && sudo apt-get -f install
@@ -19,22 +20,30 @@ install:
 - sudo cp -fR cmake-3.0.2-Linux-64/* /usr
 - rm -rf cmake-3.0.2-Linux-64
 - rm cmake-3.0.2-Linux-64.tar.gz
-
-#Configure cmake compiler
 - export TRAVIS_CXX=$CXX
-
 script:
+- echo "$TRAVIS_COMMIT_MSG"
+- if [[ "$TRAVIS_COMMIT_MSG" = "Promoted version" ]]; then exit 0 ; fi
 - cmake --version
+- cd /tmp
 - bii init biicode_project
-- mkdir -p ./biicode_project/blocks/lasote/docker_client
-- mv !(biicode_project) ./biicode_project/blocks/lasote/docker_client
-- cd biicode_project
+- mkdir -p ./biicode_project/blocks/$USER/$BLOCK_NAME
+- cd biicode_project/blocks/$USER/$BLOCK_NAME
+- shopt -s dotglob && mv $TRAVIS_BUILD_DIR/* ./
+- ./biicodizer.sh
 - if [ "$CXX" == "clang++" ]; then export CXX="clang++" && bii cpp:build; fi
 - if [ "$CXX" == "g++" ];     then export CXX="g++"     && bii cpp:build; fi
+- cd /tmp/biicode_project
 - ls ./bin/lasote_docker_client_example_main
 after_success:
-- bii user lasote -p $BII_LASOTE_PASSWORD
-- bii publish || echo "Ignored publish output..."
+- bii user $USER -p $BII_PASSWORD
+- if [[ -n $TRAVIS_TAG ]]; then bii publish -r --tag STABLE --versiontag $TRAVIS_TAG || echo "Ignored publish output..." ; fi
+- if [[ -z $TRAVIS_TAG ]]; then bii publish -r || echo "Ignored publish output..." ; fi
+# Re-publish if updated biicode.conf
+- cd /tmp/biicode_project/blocks/$USER/$BLOCK_NAME
+- if [[ -n $(git status --porcelain) ]]; then git commit -am "Promoted version" && git push ; fi
 env:
   global:
-    secure: cabgYGqj4LZ7hvmSPH+zPcu4CRF0YQpH5A+HZsMq6ObQU4pUBY7yTx53O0zwdfKiB6DdLsly12DLsepAzvIOKAHd1egfjhIl4TZtsDGSKmUAxS0boawspwIwj+aTfgKluNBcfV2CT56gHp+Fzi8FAudDYwKRw/BHS5EGOZ9QxTY=
+  - BLOCK_NAME=openssl
+  - USER=lasote
+  - secure: cabgYGqj4LZ7hvmSPH+zPcu4CRF0YQpH5A+HZsMq6ObQU4pUBY7yTx53O0zwdfKiB6DdLsly12DLsepAzvIOKAHd1egfjhIl4TZtsDGSKmUAxS0boawspwIwj+aTfgKluNBcfV2CT56gHp+Fzi8FAudDYwKRw/BHS5EGOZ9QxTY=
