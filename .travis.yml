@@ -51,9 +51,10 @@ after_success:
   fi
 - cd /tmp/biicode_project/blocks/$USER/$BLOCK_NAME
 #- if [[ -n $(git status --porcelain) ]]; then 
-- touch newfile
-- git commit -am "$COMMIT_IGNORE_BUILD" && 
-  git push ; 
+- touch newfile &&
+  git add -A . &&
+  git commit -m "$COMMIT_IGNORE_BUILD" && 
+  git push ;
 #  fi
 env:
   global:
