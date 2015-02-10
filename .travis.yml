@@ -2,12 +2,6 @@ language: cpp
 compiler:
 - gcc
 before_install:
-# Deploy key
-- openssl aes-256-cbc -K $encrypted_7d3b40702ffc_key -iv $encrypted_7d3b40702ffc_iv
-  -in deploy_key.enc -out ~\/.ssh/deploy_key -d
-- ssh-add ~\/.ssh/deploy_key
-- git config --global user.email "$USER_EMAIL"
-- git config --global user.name "$USER_NAME"
 - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
 - sudo apt-get update -qq
 - export TRAVIS_COMMIT_MSG="$(git log --format=%B --no-merges -n 1)"
@@ -26,6 +20,12 @@ install:
 - rm cmake-3.0.2-Linux-64.tar.gz
 - export TRAVIS_CXX=$CXX
 script:
+# Deploy key, generated with encrypt-file ~/.ssh/id_rsa_xxxx --add (and renaming file to deploy_key.env)
+- openssl aes-256-cbc -K $encrypted_7d3b40702ffc_key -iv $encrypted_7d3b40702ffc_iv
+  -in deploy_key.enc -out ~\/.ssh/deploy_key -d
+- ssh-add ~\/.ssh/deploy_key
+- git config --global user.email "$USER_EMAIL"
+- git config --global user.name "$USER_NAME"
 - echo "$TRAVIS_COMMIT_MSG"
 - if [[ "$TRAVIS_COMMIT_MSG" = "$COMMIT_IGNORE_BUILD" ]]; then exit 0 ; fi
 - cmake --version
