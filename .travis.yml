@@ -7,7 +7,7 @@ before_install:
 - sudo apt-get update -qq
 - export TRAVIS_COMMIT_MSG="$(git log --format=%B --no-merges -n 1)"
 install:
-- if [[ "$TRAVIS_COMMIT_MSG" = "Promoted version" ]]; then exit 0 ; fi
+- if [[ "$TRAVIS_COMMIT_MSG" = "$COMMIT_IGNORE_BUILD" ]]; then exit 0 ; fi
 - if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.8; fi
 - if [ "$CXX" == "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++
   /usr/bin/g++-4.8 50; fi
@@ -23,7 +23,7 @@ install:
 - export TRAVIS_CXX=$CXX
 script:
 - echo "$TRAVIS_COMMIT_MSG"
-- if [[ "$TRAVIS_COMMIT_MSG" = "Promoted version" ]]; then exit 0 ; fi
+- if [[ "$TRAVIS_COMMIT_MSG" = "$COMMIT_IGNORE_BUILD" ]]; then exit 0 ; fi
 - cmake --version
 - cd /tmp
 - bii init biicode_project
@@ -36,15 +36,24 @@ script:
 - ls ./bin/lasote_docker_client_example_main
 after_success:
 - bii user $USER -p $BII_PASSWORD
-- if [[ -n $TRAVIS_TAG ]]; then bii publish -r --tag STABLE --versiontag $TRAVIS_TAG
-  || echo "Ignored publish output..." ; fi
-- if [[ -z $TRAVIS_TAG ]]; then bii publish -r || echo "Ignored publish output..."
-  ; fi
+- if [[ -n $TRAVIS_TAG ]]; then 
+	bii publish -r --tag STABLE --versiontag $TRAVIS_TAG ||
+    echo "Ignored publish output...";
+  fi
+- if [[ -z $TRAVIS_TAG ]]; then 
+    bii publish -r || echo "Ignored publish output...";
+  fi
 - cd /tmp/biicode_project/blocks/$USER/$BLOCK_NAME
-- if [[ -n $(git status --porcelain) ]]; then git commit -am "Promoted version" &&
-  git push ; fi
+- if [[ -n $(git status --porcelain) ]]; then 
+    git config --global user.email "$USER_EMAIL" ||
+    git config --global user.name "$USER_NAME" ||
+    git commit -am "$COMMIT_IGNORE_BUILD" && git push ; 
+  fi
 env:
   global:
+  - USER_EMAIL=lasote@gmail.com
+  - USER_NAME="Luis Martinez de Bartolome"
+  - COMMIT_IGNORE_BUILD="Promoted version.***travis***"
   - BLOCK_NAME=docker_client
   - USER=lasote
   - secure: K4oI72CcIcUBo3cb7DfhPoWSOEZxNzx8JOLpkZ/xOy3vFvXatvDP1KEpDvpirIGkueBuzhzMXXWE1wsefsbimh1PWSE5iyyF52aoWGuhKsjXt0/q80G2uwA/lcJIRJhJCH0m7QAsG8j054x06A+CJUHOsYCNKK3XUzE5ice+Dsc=
