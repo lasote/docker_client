@@ -2,7 +2,6 @@
 
 [![Build Status](https://webapi.biicode.com/v1/badges/lasote/lasote/docker_client/master)](https://www.biicode.com/lasote/docker_client) 
 
-
 ![lasote/docker_client](http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/biicode-cplus-docker.jpg)
 
 
