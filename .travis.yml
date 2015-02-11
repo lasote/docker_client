@@ -49,6 +49,7 @@ after_success:
 - git add -A .
 - git commit -m "$COMMIT_IGNORE_BUILD" 
 - git remote -v
+- git remote set-url origin https://github.com/$TRAVIS_REPO_SLUG.git 
 - git push
 env:
   global:
