@@ -34,7 +34,9 @@ script:
 - if [ "$CXX" == "clang++" ]; then export CXX="clang++" && bii cpp:build; fi
 - if [ "$CXX" == "g++" ];     then export CXX="g++"     && bii cpp:build; fi
 - cd /tmp/biicode_project
+##################### CHANGE WITH YOUR CUSTOM CHECKS OR TEST EXECUTION ##################
 - ls ./bin/lasote_docker_client_example_main
+#########################################################################################
 after_success:
 - bii user $USER -p $BII_PASSWORD
 - if [[ -n $TRAVIS_TAG ]]; then bii publish -r --tag STABLE --versiontag $TRAVIS_TAG
@@ -43,7 +45,6 @@ after_success:
   fi
 # If there are changes, commit them
 - cd /tmp/biicode_project/blocks/$USER/$BLOCK_NAME
-- touch newfile 
 - git config credential.helper "store --file=.git/credentials" 
 - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 - git add -A .
