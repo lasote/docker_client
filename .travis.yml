@@ -47,7 +47,9 @@ after_success:
 - git config credential.helper "store --file=.git/credentials" 
 - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 - git add -A .
-- git commit -m "$COMMIT_IGNORE_BUILD" && git push
+- git commit -m "$COMMIT_IGNORE_BUILD" 
+- git remote -v
+- git push
 env:
   global:
   - USER_EMAIL=lasote@gmail.com
@@ -55,5 +57,7 @@ env:
   - COMMIT_IGNORE_BUILD="Promoted version.***travis***"
   - BLOCK_NAME=docker_client
   - USER=lasote
+  # BII_PASSWORD: Biicode USER's password
   - secure: K4oI72CcIcUBo3cb7DfhPoWSOEZxNzx8JOLpkZ/xOy3vFvXatvDP1KEpDvpirIGkueBuzhzMXXWE1wsefsbimh1PWSE5iyyF52aoWGuhKsjXt0/q80G2uwA/lcJIRJhJCH0m7QAsG8j054x06A+CJUHOsYCNKK3XUzE5ice+Dsc=
+  # GH_TOKEN: Github token
   - secure: gNKs9E4Fh2agwqaGFTl1uzLvT+PrhykIi57eo9IkAlBuae/jOjAqxGua7NM7Rg+FxjLYh+wecPpO9DXsyNmeBjKpRN3AUmL6qTUgnVndxaRGV4avYpvnVymy6btqoyyBO3lm+wXgaKPtyp9NxjYhXbiQXnMC77yZOLC2k8BCRgk=
